@@ -1,0 +1,1 @@
+[{"frecuencia":4,"topico":"Gram tica 2"},{"frecuencia":4,"topico":"Comidas y Bebidas"},{"frecuencia":4,"topico":"Transporte"},{"frecuencia":4,"topico":"Condiciones"},{"frecuencia":4,"topico":"Deseos y Anhelos"}]666undefined666[]

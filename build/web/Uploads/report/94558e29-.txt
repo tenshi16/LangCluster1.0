@@ -1,0 +1,1 @@
+[{"madurez":2.4615,"idioma":"Ingl‚s"}]666[{"frecuencia":4,"topico":"Deseos y Anhelos"},{"frecuencia":2,"topico":"Gr matica 1"},{"frecuencia":1,"topico":"Descripciones"}]666[{"avance":2.6,"idioma":"Ingl‚s"}]

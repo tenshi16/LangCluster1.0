@@ -1,0 +1,1 @@
+[{"frecuencia":4,"topico":"Transporte"},{"frecuencia":4,"topico":"Descripciones"},{"frecuencia":4,"topico":"Condiciones"},{"frecuencia":4,"topico":"Naturaleza"},{"frecuencia":4,"topico":"Tiempo"}]666undefined666[]

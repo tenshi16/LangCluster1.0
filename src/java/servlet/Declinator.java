@@ -1,0 +1,216 @@
+package servlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+
+@WebServlet(name = "Declinator", urlPatterns = {"/Declinator"})
+public class Declinator extends HttpServlet {   
+    
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        boolean access=request.getHeader("referer").substring(0,request.getHeader("referer").lastIndexOf("/")).contains(request.getRequestURL().toString().substring(0,request.getRequestURL().toString().lastIndexOf("/")));
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        if(access){
+            String type=request.getParameter("type");
+            String iso=request.getParameter("iso");
+            switch(iso){
+                case "EN":
+                    switch(type){
+                        case "0":   //VERBO
+                            String verb=request.getParameter("verb");
+                           // verb="BE";
+                            JSONArray jsonArray = new JSONArray();
+                            String[] forms=conjugateEN(verb).split(";");
+                            for(int i=0,j=0;i<forms.length*6;i+=6,j++){
+                                //System.out.println(i+"-"+j);
+                                String[] subforms=forms[j].split(",");
+                                if(j==3){
+                                    jsonArray.put(i,"<strong>Participio Presente</strong> "+subforms[0]);
+                                    jsonArray.put(i+1,"<strong>Participio Pasado</strong> "+subforms[1]);
+                                }
+                                else{
+                                    jsonArray.put(i,"<strong>I</strong> "+subforms[0]);
+                                    jsonArray.put(i+1,"<strong>You</strong> "+subforms[1]);
+                                    jsonArray.put(i+2,"<strong>He/She/It</strong> "+subforms[2]);
+                                    jsonArray.put(i+3,"<strong>We</strong> "+subforms[3]);
+                                    jsonArray.put(i+4,"<strong>You</strong> "+subforms[4]);
+                                    jsonArray.put(i+5,"<strong>They</strong> "+subforms[5]);
+                                }
+                            }
+                            if(jsonArray.isNull(0)) out.println("NoData");
+                            else                    out.println(jsonArray);
+                        break;
+                    }
+                break;
+            }
+        }else out.print(""); 
+        out.flush(); 
+        out.close();
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "LangCluster - Declinator Servlet";
+    }// </editor-fold>
+
+    private String conjugateEN(String verb){
+        //ArrayList<String> forms=new ArrayList<>();
+        String forms="";
+        verb=verb.toUpperCase();
+        switch(verb){
+            case "BE":  forms+="AM,ARE,IS,ARE,ARE,ARE;WAS,WERE,WAS,WERE,WERE,WERE;WILL BE,WILL BE,WILL BE,WILL BE,WILL BE,WILL BE;BEING,BEEN"; break;
+            case "AWAKE": forms+="AWAKE,AWAKE,AWAKES,AWAKE,AWAKE,AWAKE;AWOKE,AWOKE,AWOKE,AWOKE,AWOKE,AWOKE;WILL AWAKE,WILL AWAKE,WILL AWAKE,WILL AWAKE,WILL AWAKE,WILL AWAKE;AWOKING,AWOKEN"; break;
+            case "BEAR": forms+="BEAR,BEAR,BEARS,BEAR,BEAR,BEAR;BORE,BORE,BORE,BORE,BORE,BORE;WILL BEAR,WILL BEAR,WILL BEAR,WILL BEAR,WILL BEAR,WILL BEAR;BEARING,BORNE"; break;
+            case "BEAT": forms+="BEAT,BEAT,BEATS,BEAT,BEAT,BEAT;BEAT,BEAT,BEAT,BEAT,BEAT,BEAT;WILL BEAT,WILL BEAT,WILL BEAT,WILL BEAT,WILL BEAT,WILL BEAT;BEATING,BEATEN"; break;
+            case "BECOME": forms+="BECOME,BECOME,BECOMES,BECOME,BECOME,BECOME;BECAME,BECAME,BECAME,BECAME,BECAME,BECAME;WILL BECOME,WILL BECOME,WILL BECOME,WILL BECOME,WILL BECOME,WILL BECOME;BECOMING,BECOME"; break;
+            case "BEGIN": forms+="BEGIN,BEGIN,BEGINS,BEGIN,BEGIN,BEGIN;BEGAN,BEGAN,BEGAN,BEGAN,BEGAN,BEGAN;WILL BEGIN,WILL BEGIN,WILL BEGIN,WILL BEGIN,WILL BEGIN,WILL BEGIN;BEGINNING,BEGUN"; break;
+            case "BET": forms+="BET,BET,BETS,BET,BET,BET;BET,BET,BET,BET,BET,BET;WILL BET,WILL BET,WILL BET,WILL BET,WILL BET,WILL BET;BETTING,BET"; break;
+            case "BITE": forms+="BITE,BITE,BITES,BITE,BITE,BITE;BIT,BIT,BIT,BIT,BIT,BIT;WILL BITE,WILL BITE,WILL BITE,WILL BITE,WILL BITE,WILL BITE;BITTING,BITTEN"; break;
+            case "BLEED": forms+="BLEED,BLEED,BLEEDS,BLEED,BLEED,BLEED;WILL BLEED,WILL BLEED,WILL BLEED,WILL BLEED,WILL BLEED,WILL BLEED;BLEEDING,BLED"; break;
+            case "BLOW": forms+="BLOW,BLOW,BLOWS,BLOW,BLOW,BLOW;BLEW,BLEW,BLEW,BLEW,BLEW,BLEW;WILL BLOW,WILL BLOW,WILL BLOW,WILL BLOW,WILL BLOW,WILL BLOW;BLOWING,BLOWN"; break;
+            case "BREAK": forms+="BREAK,BREAK,BREAKS,BREAK,BREAK,BREAK;BROKE,BROKE,BROKE,BROKE,BROKE,BROKE;WILL BREAK,WILL BREAK,WILL BREAK,WILL BREAK,WILL BREAK,WILL BREAK;BREAKING,BROKEN"; break;
+            case "BRING": forms+="BRING,BRING,BRINGS,BRING,BRING,BRING;BROUGHT,BROUGHT,BROUGHT,BROUGHT,BROUGHT,BROUGHT;WILL BRING,WILL BRING,WILL BRING,WILL BRING,WILL BRING,WILL BRING;BRINGING,BROUGHT"; break;
+            case "BUILD": forms+="BUILD,BUILD,BUILDS,BUILD,BUILD,BUILD;BUILT,BUILT,BUILT,BUILT,BUILT,BUILT;WILL BUILD,WILL BUILD,WILL BUILD,WILL BUILD,WILL BUILD,WILL BUILD;BUILDING,BUILT"; break;
+            case "BUY": forms+="BUY,BUY,BUYS,BUY,BUY,BUY,BUY;BOUGHT,BOUGHT,BOUGHT,BOUGHT,BOUGHT,BOUGHT;WILL BUY,WILL BUY,WILL BUY,WILL BUY,WILL BUY,WILL BUY;BUYING,BOUGHT"; break;
+            case "CAN": forms+="CAN,CAN,CAN,CAN,CAN,CAN;COULD,COULD,COULD,COULD,COULD,COULD;-,-,-,-,-,-;-,-"; break;
+            case "CATCH": forms+="CATCH,CATCH,CATCHES,CATCH,CATCH,CATCH;CAUGHT,CAUGHT,CAUGHT,CAUGHT,CAUGHT,CAUGHT;WILL CATCH,WILL CATCH,WILL CATCH,WILL CATCH,WILL CATCH,WILL CATCH;CATCHING,CAUGHT"; break;
+            case "CHOOSE": forms+="CHOOSE,CHOOSE,CHOOSES,CHOOSE,CHOOSE,CHOOSE;CHOSE,CHOSE,CHOSE,CHOSE,CHOSE,CHOSE;WILL CHOOSE,WILL CHOOSE,WILL CHOOSE,WILL CHOOSE,WILL CHOOSE,WILL CHOOSE;CHOOSING,CHOSEN"; break;
+            case "COME": forms+="COME,COME,COMES,COME,COME,COME;CAME,CAME,CAME,CAME,CAME,CAME;WILL COME,WILL COME,WILL COME,WILL COME,WILL COME,WILL COME;COMING,COME"; break;
+            case "CUT": forms+="CUT,CUT,CUTS,CUT,CUT,CUT;CUT,CUT,CUT,CUT,CUT,CUT;WILL CUT,WILL CUT,WILL CUT,WILL CUT,WILL CUT,WILL CUT;CUTTING,CUT"; break;
+            case "DEAL": forms+="DEAL,DEAL,DEALS,DEAL,DEAL,DEAL;DEALT,DEALT,DEALT,DEALT,DEALT,DEALT;WILL DEAL,WILL DEAL,WILL DEAL,WILL DEAL,WILL DEAL,WILL DEAL;DEALING,DEALT"; break;
+            case "DIG": forms+="DIG,DIG,DIGS,DIG,DIG,DIG;DUG,DUG,DUG,DUG,DUG,DUG;WILL DIG,WILL DIG,WILL DIG,WILL DIG,WILL DIG,WILL DIG;DIGGING,DUG"; break;
+            case "DO": forms+="DO,DO,DOES,DO,DO,DO;DID,DID,DID,DID,DID,DID;WILL DO,WILL DO,WILL DO,WILL DO,WILL DO,WILL DO;DOING,DONE"; break;
+            case "DRAW": forms+="DRAW,DRAW,DRAWS,DRAW,DRAW,DRAW;DREW,DREW,DREW,DREW,DREW,DREW;WILL DRAW,WILL DRAW,WILL DRAW,WILL DRAW,WILL DRAW,WILL DRAW;DRAWING,DRAWN"; break;
+            case "DRINK": forms+="DRINK,DRINK,DRINKS,DRINK,DRINK,DRINK;DRANK,DRANK,DRANK,DRANK,DRANK,DRANK;WILL DRINK,WILL DRINK,WILL DRINK,WILL DRINK,WILL DRINK,WILL DRINK;DRINKING,DRUNK"; break;
+            case "DRIVE": forms+="DRIVE,DRIVE,DRIVES,DRIVE,DRIVE,DRIVE;DROVE,DROVE,DROVE,DROVE,DROVE,DROVE;WILL DRIVE,WILL DRIVE,WILL DRIVE,WILL DRIVE,WILL DRIVE,WILL DRIVE;DRIVING,DRIVEN"; break;
+            case "EAT": forms+="EAT,EAT,EATS,EAT,EAT,EAT;ATE,ATE,ATE,ATE,ATE,ATE;WILL EAT,WILL EAT,WILL EAT,WILL EAT,WILL EAT,WILL EAT;EATING,EATEN"; break;
+            case "FALL": forms+="FALL,FALL,FALLS,FALL,FALL,FALL;FELL,FELL,FELL,FELL,FELL,FELL;WILL FALL,WILL FALL,WILL FALL,WILL FALL,WILL FALL,WILL FALL;FALLING,FALLEN"; break;
+            case "FEED": forms+="FEED,FEED,FEEDS,FEED,FEED,FEED;FED,FED,FED,FED,FED,FED;WILL FEED,WILL FEED,WILL FEED,WILL FEED,WILL FEED,WILL FEED;FEEDING,FED"; break;
+            case "FEEL": forms+="FEEL,FEEL,FEELS,FEEL,FEEL,FEEL;FELT,FELT,FELT,FELT,FELT,FELT;WILL FEEL,WILL FEEL,WILL FEEL,WILL FEEL,WILL FEEL,WILL FEEL;FEELING,FELT"; break;
+            case "FIGHT": forms+="FIGHT,FIGHT,FIGHTS,FIGHT,FIGHT,FIGHT;FOUGHT,FOUGHT,FOUGHT,FOUGHT,FOUGHT,FOUGHT;WILL FIGHT,WILL FIGHT,WILL FIGHT,WILL FIGHT,WILL FIGHT,WILL FIGHT;FIGHTING,FOUGHT"; break;
+            case "FIND": forms+="FIND,FIND,FINDS,FIND,FIND,FIND;FOUND,FOUND,FOUND,FOUND,FOUND,FOUND;WILL FIND,WILL FIND,WILL FIND,WILL FIND,WILL FIND,WILL FIND;FINDING,FOUND"; break;
+            case "FLY": forms+="FLY,FLY,FLIES,FLY,FLY,FLY;FLEW,FLEW,FLEW,FLEW,FLEW,FLEW;WILL FLY,WILL FLY,WILL FLY,WILL FLY,WILL FLY,WILL FLY;FLYING,FLOWN"; break;
+            case "FORGET": forms+="FORGET,FORGET,FORGETS,FORGET,FORGET,FORGET;FORGOT,FORGOT,FORGOT,FORGOT,FORGOT,FORGOT;WILL FORGET,WILL FORGET,WILL FORGET,WILL FORGET,WILL FORGET,WILL FORGET;FORGETTING,FORGOTTEN"; break;
+            case "FORGIVE": forms+="FORGIVE,FORGIVE,FORGIVES,FORGIVE,FORGIVE,FORGIVE;FORGAVE,FORGAVE,FORGAVE,FORGAVE,FORGAVE,FORGAVE;WILL FORGIVE,WILL FORGIVE,WILL FORGIVE,WILL FORGIVE,WILL FORGIVE,WILL FORGIVE;FORGIVING,FORGIVEN"; break;
+            case "FREEZE": forms+="FREEZE,FREEZE,FREEZES,FREEZE,FREEZE,FREEZE;FROZE,FROZE,FROZE,FROZE,FROZE,FROZE;WILL FREEZE,WILL FREEZE,WILL FREEZE,WILL FREEZE,WILL FREEZE,WILL FREEZE;FREEZING,FROZEN"; break;
+            case "GET": forms+="GET,GET,GETS,GET,GET,GET;GOT,GOT,GOT,GOT,GOT,GOT;WILL GET,WILL GET,WILL GET,WILL GET,WILL GET,WILL GET;GETTING,GOT(TEN)"; break;
+            case "GIVE": forms+="GIVE,GIVE,GIVES,GIVE,GIVE,GIVE;GAVE,GAVE,GAVE,GAVE,GAVE,GAVE;WILL GIVE,WILL GIVE,WILL GIVE,WILL GIVE,WILL GIVE,WILL GIVE;GIVING,GIVEN"; break;
+            case "GO": forms+="GO,GO,GOES,GO,GO,GO;WENT,WENT,WENT,WENT,WENT,WENT;WILL GO,WILL GO,WILL GO,WILL GO,WILL GO,WILL GO;GOING,GONE"; break;
+            case "GROW": forms+="GROW,GROW,GROWS,GROW,GROW,GROW;GREW,GREW,GREW,GREW,GREW,GREW;WILL GROW,WILL GROW,WILL GROW,WILL GROW,WILL GROW,WILL GROW;GROWING,GROWN"; break;
+            case "HAVE": forms+="HAVE,HAVE,HAS,HAVE,HAVE,HAVE;HAD,HAD,HAD,HAD,HAD,HAD;WILL HAVE,WILL HAVE,WILL HAVE,WILL HAVE,WILL HAVE,WILL HAVE;HAVING,HAD"; break;
+            case "HEAR": forms+="HEAR,HEAR,HEARS,HEAR,HEAR,HEAR;HEARD,HEARD,HEARD,HEARD,HEARD,HEARD;WILL HEAR,WILL HEAR,WILL HEAR,WILL HEAR,WILL HEAR,WILL HEAR;HEARING,HEARD"; break;
+            case "HIDE": forms+="HIDE,HIDE,HIDES,HIDE,HIDE,HIDE;HID,HID,HID,HID,HID,HID;WILL HIDE,WILL HIDE,WILL HIDE,WILL HIDE,WILL HIDE,WILL HIDE;HIDING,HIDDEN"; break;
+            case "HIT": forms+="HIT,HIT,HITS,HIT,HIT,HIT;HIT,HIT,HIT,HIT,HIT,HIT;WILL HIT,WILL HIT,WILL HIT,WILL HIT,WILL HIT,WILL HIT;HITTING,HIT"; break;
+            case "HOLD": forms+="HOLD,HOLD,HOLDS,HOLD,HOLD,HOLD;HELD,HELD,HELD,HELD,HELD,HELD;WILL HOLD,WILL HOLD,WILL HOLD,WILL HOLD,WILL HOLD,WILL HOLD;HOLDING,HELD"; break;
+            case "HURT": forms+="HURT,HURT,HURTs,HURT,HURT,HURT;HURT,HURT,HURT,HURT,HURT,HURT;WILL HURT,WILL HURT,WILL HURT,WILL HURT,WILL HURT,WILL HURT;HURTING,HURT"; break;
+            case "KEEP": forms+="KEEP,KEEP,KEEPS,KEEP,KEEP,KEEP;KEPT,KEPT,KEPT,KEPT,KEPT,KEPT;WILL KEEP,WILL KEEP,WILL KEEP,WILL KEEP,WILL KEEP,WILL KEEP;KEEPING,KEPT"; break;
+            case "KNOW": forms+="KNOW,KNOW,KNOWS,KNOW,KNOW,KNOW;KNEW,KNEW,KNEW,KNEW,KNEW,KNEW;WILL KNOW,WILL KNOW,WILL KNOW,WILL KNOW,WILL KNOW,WILL KNOW;KNOWING,KNOWN"; break;
+            case "LAY": forms+="LAY,LAY,LAYS,LAY,LAY,LAY;LAID,LAID,LAID,LAID,LAID,LAID;WILL LAY,WILL LAY,WILL LAY,WILL LAY,WILL LAY,WILL LAY;LAYING,LAID"; break;
+            case "LEAD": forms+="LEAD,LEAD,LEADS,LEAD,LEAD,LEAD;LED,LED,LED,LED,LED,LED;WILL LEAD,WILL LEAD,WILL LEAD,WILL LEAD,WILL LEAD,WILL LEAD;LEADING,LED"; break;
+            case "LEAVE": forms+="LEAVE,LEAVE,LEAVES,LEAVE,LEAVE,LEAVE;LEFT,LEFT,LEFT,LEFT,LEFT,LEFT;WILL LEAVE,WILL LEAVE,WILL LEAVE,WILL LEAVE,WILL LEAVE,WILL LEAVE;LEAVING,LEFT"; break;
+            case "LEND": forms+="LEND,LEND,LENDS,LEND,LEND,LEND;LENT,LENT,LENT,LENT,LENT,LENT;WILL LEND,WILL LEND,WILL LEND,WILL LEND,WILL LEND,WILL LEND;LENDING,LENT"; break;
+            case "LET": forms+="LET,LET,LETS,LET,LET,LET;LET,LET,LET,LET,LET,LET;WILL LET,WILL LET,WILL LET,WILL LET,WILL LET,WILL LET;LETTING,LET"; break;
+            case "LIE": forms+="LIE,LIE,LIES,LIE,LIE,LIE;LAY/LIED,LAY/LIED,LAY/LIED,LAY/LIED,LAY/LIED,LAY/LIED;WILL LIE,WILL LIE,WILL LIE,WILL LIE,WILL LIE,WILL LIE;LYING,LAIN/LIED"; break;
+            case "LOSE": forms+="LOSE,LOSE,LOSES,LOSE,LOSE,LOSE;LOST,LOST,LOST,LOST,LOST,LOST;WILL LOSE,WILL LOSE,WILL LOSE,WILL LOSE,WILL LOSE,WILL LOSE;LOSING,LOST"; break;
+            case "MAKE": forms+="MAKE,MAKE,MAKES,MAKE,MAKE,MAKE;MADE,MADE,MADE,MADE,MADE,MADE;WILL MAKE,WILL MAKE,WILL MAKE,WILL MAKE,WILL MAKE,WILL MAKE;MAKING,MADE"; break;
+            case "MAY": forms+="MAY,MAY,MAY,MAY,MAY,MAY;MIGHT,MIGHT,MIGHT,MIGHT,MIGHT,MIGHT;-,-,-,-,-,-;-,-"; break;
+            case "MEAN": forms+="MEAN,MEAN,MEANS,MEAN,MEAN,MEAN;MEANT,MEANT,MEANT,MEANT,MEANT,MEANT;WILL MEAN,WILL MEAN,WILL MEAN,WILL MEAN,WILL MEAN,WILL MEAN;MEANING,MENT"; break;
+            case "MEET": forms+="MEET,MEET,MEETS,MEET,MEET,MEET;MET,MET,MET,MET,MET,MET;WILL MEET,WILL MEET,WILL MEET,WILL MEET,WILL MEET,WILL MEET;MEETING,MET"; break;
+            case "PAY": forms+="PAY,PAY,PAYS,PAY,PAY,PAY;PAID,PAID,PAID,PAID,PAID,PAID;WILL PAY,WILL PAY,WILL PAY,WILL PAY,WILL PAY,WILL PAY;PAYING,PAID"; break;
+            case "PUT": forms+="PUT,PUT,PUTS,PUT,PUT,PUT;PUT,PUT,PUT,PUT,PUT,PUT;WILL PUT,WILL PUT,WILL PUT,WILL PUT,WILL PUT,WILL PUT;PUTTING,PUT"; break;
+            case "READ": forms+="READ,READ,READS,READ,READ,READ;READ,READ,READ,READ,READ,READ;WILL READ,WILL READ,WILL READ,WILL READ,WILL READ,WILL READ;READING,READ,"; break;
+            case "RIDE": forms+="RIDE,RIDE,RIDES,RIDE,RIDE,RIDE;RODE,RODE,RODE,RODE,RODE,RODE;WILL RIDE,WILL RIDE,WILL RIDE,WILL RIDE,WILL RIDE,WILL RIDE;RIDING,RIDDEN"; break;
+            case "RING": forms+="RING,RING,RINGS,RING,RING,RING;RANG,RANG,RANG,RANG,RANG,RANG;WILL RING,WILL RING,WILL RING,WILL RING,WILL RING,WILL RING;RINGING,RUNG"; break;
+            case "RISE": forms+="RISE,RISE,RISES,RISE,RISE,RISE;ROSE,ROSE,ROSE,ROSE,ROSE,ROSE;WILL RISE,WILL RISE,WILL RISE,WILL RISE,WILL RISE,WILL RISE;RISING,RISEN"; break;
+            case "RUN": forms+="RUN,RUN,RUNS,RUN,RUN,RUN;RAN,RAN,RAN,RAN,RAN,RAN;WILL RUN,WILL RUN,WILL RUN,WILL RUN,WILL RUN,WILL RUN;RUNNING,RUN"; break;
+            case "SAY": forms+="SAY,SAY,SAYS,SAY,SAY,SAY;SAID,SAID,SAID,SAID,SAID,SAID;WILL SAY,WILL SAY,WILL SAY,WILL SAY,WILL SAY,WILL SAY;SAYING,SAID"; break;
+            case "SEE": forms+="SEE,SEE,SEES,SEE,SEE,SEE;SAW,SAW,SAW,SAW,SAW,SAW;WILL SEE,WILL SEE,WILL SEE,WILL SEE,WILL SEE,WILL SEE;SEEING,SEEN"; break;
+            case "SEEK": forms+="SEEK,SEEK,SEEKS,SEEK,SEEK,SEEK;SOUGHT,SOUGHT,SOUGHT,SOUGHT,SOUGHT,SOUGHT;WILL SEEK,WILL SEEK,WILL SEEK,WILL SEEK,WILL SEEK,WILL SEEK;SEEKING,SOUGHT"; break;
+            case "SELL": forms+="SELL,SELL,SELLS,SELL,SELL,SELL;SOLD,SOLD,SOLD,SOLD,SOLD,SOLD;WILL SELL,WILL SELL,WILL SELL,WILL SELL,WILL SELL,WILL SELL;SELLING,SOLD"; break;
+            case "SEND": forms+="SEND,SEND,SENDS,SEND,SEND,SEND;SENT,SENT,SENT,SENT,SENT,SENT;WILL SEND,WILL SEND,WILL SEND,WILL SEND,WILL SEND,WILL SEND;SENDING,SENT"; break;
+            case "SET": forms+="SET,SET,SETS,SET,SET,SET;SET,SET,SET,SET,SET,SET;WILL SET,WILL SET,WILL SET,WILL SET,WILL SET,WILL SET;SETTING,SET"; break;
+            case "SHAKE": forms+="SHAKE,SHAKE,SHAKES,SHAKE,SHAKE,SHAKE;SHOOK,SHOOK,SHOOK,SHOOK,SHOOK,SHOOK;WILL SHAKE,WILL SHAKE,WILL SHAKE,WILL SHAKE,WILL SHAKE,WILL SHAKE;SHAKING,SHAKEN"; break;
+            case "SHALL": forms+="SHALL,SHALL,SHALL,SHALL,SHALL,SHALL;SHOULD,SHOULD,SHOULD,SHOULD,SHOULD,SHOULD;-,-,-,-,-,-;-,-";
+            case "SHINE": forms+="SHINE,SHINE,SHINES,SHINE,SHINE,SHINE;SHONE,SHONE,SHONE,SHONE,SHONE,SHONE;WILL SHINE,WILL SHINE,WILL SHINE,WILL SHINE,WILL SHINE,WILL SHINE;SHINING,SHONE"; break;
+            case "SHOOT": forms+="SHOOT,SHOOT,SHOOTS,SHOOT,SHOOT,SHOOT;SHOT,SHOT,SHOT,SHOT,SHOT,SHOT;WILL SHOOT,WILL SHOOT,WILL SHOOT,WILL SHOOT,WILL SHOOT,WILL SHOOT;SHOOTING,SHOT"; break;
+            case "SHOW": forms+="SHOW,SHOW,SHOWS,SHOW,SHOW,SHOW;SHOWED,SHOWED,SHOWED,SHOWED,SHOWED,SHOWED;WILL SHOW,WILL SHOW,WILL SHOW,WILL SHOW,WILL SHOW,WILL SHOW;SHOWING,SHOWN"; break;
+            case "SHRINK": forms+="SHRINK,SHRINK,SHRINKS,SHRINK,SHRINK,SHRINK;SHRANK,SHRANK,SHRANK,SHRANK,SHRANK,SHRANK;WILL SHRINK,WILL SHRINK,WILL SHRINK,WILL SHRINK,WILL SHRINK,WILL SHRINK;SHRINKING,SHRUNK"; break;
+            case "SHUT": forms+="SHUT,SHUT,SHUTS,SHUT,SHUT,SHUT;SHUT,SHUT,SHUT,SHUT,SHUT,SHUT;WILL SHUT,WILL SHUT,WILL SHUT,WILL SHUT,WILL SHUT,WILL SHUT;SHUTTING,SHUT"; break;
+            case "SING": forms+="SING,SING,SINGS,SING,SING,SING;SANG,SANG,SANG,SANG,SANG,SANG;WILL SING,WILL SING,WILL SING,WILL SING,WILL SING,WILL SING;SINGING,SUNG"; break;
+            case "SINK": forms+="SINK,SINK,SINKS,SINK,SINK,SINK;SANK,SANK,SANK,SANK,SANK,SANK;WILL SINK,WILL SINK,WILL SINK,WILL SINK,WILL SINK,WILL SINK;SINKING,SUNK"; break;
+            case "SIT": forms+="SIT,SIT,SITS,SIT,SIT,SIT;SAT,SAT,SAT,SAT,SAT,SAT;WILL SIT,WILL SIT,WILL SIT,WILL SIT,WILL SIT,WILL SIT;SITTING,SAT"; break;
+            case "SLEEP": forms+="SLEEP,SLEEP,SLEEPS,SLEEP,SLEEP,SLEEP;SLEPT,SLEPT,SLEPT,SLEPT,SLEPT,SLEPT;WILL SLEEP,WILL SLEEP,WILL SLEEP,WILL SLEEP,WILL SLEEP,WILL SLEEP;SLEEPING,SLEPT"; break;
+            case "SLIDE": forms+="SLIDE,SLIDE,SLIDES,SLIDE,SLIDE,SLIDE;SLID,SLID,SLID,SLID,SLID,SLID;WILL SLIDE,WILL SLIDE,WILL SLIDE,WILL SLIDE,WILL SLIDE,WILL SLIDE;SLIDING,SLID"; break;
+            case "SMELL": forms+="SMELL,SMELL,SMELLS,SMELL,SMELL,SMELL;SMELT,SMELT,SMELT,SMELT,SMELT,SMELT;WILL SMELL,WILL SMELL,WILL SMELL,WILL SMELL,WILL SMELL,WILL SMELL;SMELLING,SMELT"; break;
+            case "SPEAK": forms+="SPEAK,SPEAK,SPEAKS,SPEAK,SPEAK,SPEAK;SPOKE,SPOKE,SPOKE,SPOKE,SPOKE,SPOKE;WILL SPEAK,WILL SPEAK,WILL SPEAK,WILL SPEAK,WILL SPEAK,WILL SPEAK;SPEAKING,SPOKEN"; break;
+            case "SPELL": forms+="SPELL,SPELL,SPELLS,SPELL,SPELL,SPELL;SPELT/SPELLED,SPELT/SPELLED,SPELT/SPELLED,SPELT/SPELLED,SPELT/SPELLED,SPELT/SPELLED;WILL SPELL,WILL SPELL,WILL SPELL,WILL SPELL,WILL SPELL,WILL SPELL;SPELLING,SPELT/SPELLED"; break;
+            case "SPILL": forms+="SPILL,SPILL,SPILLS,SPILL,SPILL,SPILL;SPILT,SPILT,SPILT,SPILT,SPILT,SPILT;WILL SPILL,WILL SPILL,WILL SPILL,WILL SPILL,WILL SPILL,WILL SPILL;SPILLING,SPILT"; break;
+            case "SPIN": forms+="SPIN,SPIN,SPINS,SPIN,SPIN,SPIN;SPUN/SPAN,SPUN/SPAN,SPUN/SPAN,SPUN/SPAN,SPUN/SPAN,SPUN/SPAN;WILL SPIN,WILL SPIN,WILL SPIN,WILL SPIN,WILL SPIN,WILL SPIN;SPINNING,SPUN"; break;
+            case "SPLIT": forms+="SPLIT,SPLIT,SPLITS,SPLIT,SPLIT,SPLIT;SPLIT,SPLIT,SPLIT,SPLIT,SPLIT,SPLIT;WILL SPLIT,WILL SPLIT,WILL SPLIT,WILL SPLIT,WILL SPLIT,WILL SPLIT;SPLITTING,SPLIT"; break;
+            case "STAND": forms+="STAND,STAND,STANDS,STAND,STAND,STAND;STOOD,STOOD,STOOD,STOOD,STOOD,STOOD;WILL STAND,WILL STAND,WILL STAND,WILL STAND,WILL STAND,WILL STAND;STANDING,STOOD"; break;
+            case "STEAL": forms+="STEAL,STEAL,STEALS,STEAL,STEAL,STEAL;STOLE,STOLE,STOLE,STOLE,STOLE,STOLE;WILL STEAL,WILL STEAL,WILL STEAL,WILL STEAL,WILL STEAL,WILL STEAL;STEALING,STOLEN"; break;
+            case "STINK": forms+="STINK,STINK,STINKS,STINK,STINK,STINK;STANK,STANK,STANK,STANK,STANK,STANK;WILL STINK,WILL STINK,WILL STINK,WILL STINK,WILL STINK,WILL STINK;STINKING,STUNK"; break;
+            case "STRIKE": forms+="STRIKE,STRIKE,STRIKES,STRIKE,STRIKE,STRIKE;STRUCK,STRUCK,STRUCK,STRUCK,STRUCK,STRUCK;WILL STRIKE,WILL STRIKE,WILL STRIKE,WILL STRIKE,WILL STRIKE,WILL STRIKE;STRIKING,STRUCK"; break;
+            case "SWEAR": forms+="SWEAR,SWEAR,SWEARS,SWEAR,SWEAR,SWEAR;SWORE,SWORE,SWORE,SWORE,SWORE,SWORE;WILL SWEAR,WILL SWEAR,WILL SWEAR,WILL SWEAR,WILL SWEAR,WILL SWEAR;SWEARING,SWORN"; break;
+            case "SWIM": forms+="SWIM,SWIM,SWIMS,SWIM,SWIM,SWIM;SWAM,SWAM,SWAM,SWAM,SWAM,SWAM;WILL SWIM,WILL SWIM,WILL SWIM,WILL SWIM,WILL SWIM,WILL SWIM;SWIMMING,SWUM"; break;
+            case "TAKE": forms+="TAKE,TAKE,TAKES,TAKE,TAKE,TAKE;TOOK,TOOK,TOOK,TOOK,TOOK,TOOK;WILL TAKE,WILL TAKE,WILL TAKE,WILL TAKE,WILL TAKE,WILL TAKE;TAKING,TAKEN"; break;
+            case "TEACH": forms+="TEACH,TEACH,TEACHS,TEACH,TEACH,TEACH;TAUGHT,TAUGHT,TAUGHT,TAUGHT,TAUGHT,TAUGHT;WILL TEACH,WILL TEACH,WILL TEACH,WILL TEACH,WILL TEACH,WILL TEACH;TEACHING,TAUGHT"; break;
+            case "TELL": forms+="TELL,TELL,TELLS,TELL,TELL,TELL;TOLD,TOLD,TOLD,TOLD,TOLD,TOLD;WILL TELL,WILL TELL,WILL TELL,WILL TELL,WILL TELL,WILL TELL;TELLING,TOLD"; break;
+            case "THINK": forms+="THINK,THINK,THINKS,THINK,THINK,THINK;THOUGHT,THOUGHT,THOUGHT,THOUGHT,THOUGHT,THOUGHT;WILL THINK,WILL THINK,WILL THINK,WILL THINK,WILL THINK,WILL THINK;THINKING,THOUGHT"; break;
+            case "THROW": forms+="THROW,THROW,THROWS,THROW,THROW,THROW;THREW,THREW,THREW,THREW,THREW,THREW;WILL THROW,WILL THROW,WILL THROW,WILL THROW,WILL THROW,WILL THROW;THROWING,THROWN"; break;
+            case "WAKE": forms+="WAKE,WAKE,WAKES,WAKE,WAKE,WAKE;WOKE,WOKE,WOKE,WOKE,WOKE,WOKE;WILL WAKE,WILL WAKE,WILL WAKE,WILL WAKE,WILL WAKE,WILL WAKE;WAKING,WOKEN"; break;
+            case "WEAR": forms+="WEAR,WEAR,WEARS,WEAR,WEAR,WEAR;WORE,WORE,WORE,WORE,WORE,WORE;WILL WEAR,WILL WEAR,WILL WEAR,WILL WEAR,WILL WEAR,WILL WEAR;WEARING,WORN"; break;
+            case "WIN": forms+="WIN,WIN,WINS,WIN,WIN,WIN;WON,WON,WON,WON,WON,WON;WILL WIN,WILL WIN,WILL WIN,WILL WIN,WILL WIN,WILL WIN;WINNING,WON"; break;
+            case "WRITE": forms+="WRITE,WRITE,WRITES,WRITE,WRITE,WRITE;WROTE,WROTE,WROTE,WROTE,WROTE,WROTE;WILL WRITE,WILL WRITE,WILL WRITE,WILL WRITE,WILL WRITE,WILL WRITE;WRITING,WRITTEN"; break;
+            default:    String suffix=verb.substring(verb.length()-1);
+                        if(suffix.equals("E")){
+                            //VERBO TERMINADO EN -E.
+                            forms+=verb+","+verb+","+verb+"S,"+verb+","+verb+","+verb+";";      //[LOVE](S)
+                            forms+=verb+"D,"+verb+"D,"+verb+"D,"+verb+"D,"+verb+"D,"+verb+"D;"; //[LOVE]D
+                            forms+="WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+";"; //WILL [LOVE]
+                            forms+=verb.substring(0,verb.length()-1)+"ING,"+verb+"D";           //[LOV]ING,[LOVE]D
+                        }else{
+                            if(suffix.equals("Y")){
+                                //VERBO TERMINADO EN -Y
+                                forms+=verb+","+verb+","+verb.substring(0,verb.length()-1)+"IES,"+verb+","+verb+","+verb+";";  //CRY, CRIES
+                                verb=verb.substring(0,verb.length()-1);
+                                forms+=verb+"IED,"+verb+"IED,"+verb+"IED,"+verb+"IED,"+verb+"IED,"+verb+"IED;";                //CRIED
+                                forms+="WILL "+verb+"Y,WILL "+verb+"Y,WILL "+verb+"Y,WILL "+verb+"Y,WILL "+verb+"Y,WILL "+verb+";"; //WILL [CRY]
+                                forms+=verb+"YING,"+verb+"IED";                                                                //CRYING, CRIED
+                            }
+                            else if(verb.endsWith("SH")||verb.endsWith("CH")||verb.endsWith("SS")||verb.endsWith("ZZ")||verb.endsWith("X")||verb.endsWith("O")){
+                                        //VERBO TERMINADO EN CONSONANTE SIBILANTE
+                                        forms+=verb+","+verb+","+verb+"ES,"+verb+","+verb+","+verb+";";           //[WATCH](ES)
+                                        forms+=verb+"ED,"+verb+"ED,"+verb+"ED,"+verb+"ED,"+verb+"ED,"+verb+"ED;"; //[WATCH]ED
+                                        forms+="WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+";"; //WILL [WATCH]
+                                        forms+=verb+"ING,"+verb+"ED";                                             //[WATCH]ING,[WATCH]ED
+                                }else{
+                                        //VERBO REGULAR
+                                        forms+=verb+","+verb+","+verb+"S,"+verb+","+verb+","+verb+";";            //[LISTEN](S)
+                                        forms+=verb+"ED,"+verb+"ED,"+verb+"ED,"+verb+"ED,"+verb+"ED,"+verb+"ED;"; //[LISTEN]ED
+                                        forms+="WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+",WILL "+verb+";"; //WILL [LISTEN]
+                                        forms+=verb+"ING,"+verb+"ED";                                             //[LISTEN]ING,[LISTEN]ED
+                                }
+                        }
+        }
+        return forms;
+    }
+}

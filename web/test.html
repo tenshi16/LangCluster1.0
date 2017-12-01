@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+   <head>
+      <title>TODO supply a title</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="codebase/webix.css" type="text/css" media="screen" charset="utf-8">
+      <script src="CookieControl.js"></script>
+      <script src="codebase/webix.js"></script>
+      <script src="jquery-1.12.4.min.js"></script>   
+   </head>
+   <body>
+      <script>
+         
+
+         //
+         var WORD="X";
+         var RUTE="X";
+         var ID;
+         var datadetail;
+         //
+         startComplete();
+         
+         
+         
+         
+         function startComplete(){
+            $.ajax({
+                type:'POST',
+                data: {topic: "1", id:"Game2"},
+                url: 'Servlet',
+                success: function(result){
+                    if(!result || 0 === result.length){
+                        webix.message("error 2 - Datadetail=null");
+                    }
+                    else{
+                        datadetail=JSON.parse(result);
+                        $.ajax({
+                           type:'POST',
+                           data: {topic:"1", id:"Game1"},
+                           url: 'Servlet',
+                           success: function(result){
+                               if(!result || 0 === result.length){
+                                   webix.message("error 1 - Data=null");
+                               }
+                               else{
+                                   //console.log(result);
+                                   data=JSON.parse(result);
+                                   console.log("salida");
+                                   imagen(data[10],datadetail);  // Palabra de prueba 
+                                   
+                               }
+                        }});
+                    }
+                }
+            });
+        }
+        var obj;
+        function imagen(Term,ob){
+            
+            WORD = Term.termino;
+            ID = Term.id;
+            console.log(Term);
+            console.log(WORD);
+
+            $.ajax({
+               type:'POST',
+               data: {p1:Term.id, id:"Images"},
+               url: 'Servlet',
+               success: function(result){
+                  console.log(result);
+                  obj = JSON.parse(result);
+                   RUTE = JSON.stringify(obj);
+               },
+               complete: function (){
+                   webix.ui({
+                  id:"Game",
+                  view:"window",
+                  fullscreen:true,
+                  body:{rows:[
+                        { id:"word", template:"<center><strong>"+WORD+"</strong></center>",  autoheight:true},
+                        {template:"<hr width=\"90%\" size=\"2\" noshade>", autoheight:true, borderless:true},
+                        {cols:[ {},
+                                {id:obj[0].id_termino, click: select, view:"button", type:"imageTop", height:200, width:200, image:obj[0].ruta_multimedia+".jpg"},
+                                {id:obj[1].id_termino, click: select, view:"button", type:"imageTop", height:200, width:200, image:obj[1].ruta_multimedia+".jpg"},
+                                {id:obj[2].id_termino, click: select, view:"button", type:"imageTop", height:200, width:200, image:obj[2].ruta_multimedia+".jpg"},
+                                {}
+                            ]},
+                        {cols:[
+                                {},
+                                {id:obj[3].id_termino, click: select, view:"button", type:"imageTop", height:200, width:200, image:obj[3].ruta_multimedia+".jpg"},
+                                {id:obj[4].id_termino, click: select, view:"button", type:"imageTop", height:200, width:200, image:obj[4].ruta_multimedia+".jpg"},
+                                {id:obj[5].id_termino, click: select, view:"button", type:"imageTop", height:200, width:200, image:obj[5].ruta_multimedia+".jpg"},
+                                {}
+                            ]}
+                        ]
+                     }
+                  }).show();
+               }
+            });
+         }
+         
+         
+       
+        click:function select(id){
+            console.log(ID+" - "+id);
+            if(ID==id){
+                webix.message("CORRECTO");
+                paso = true
+                verify(paso);
+            }else{
+                webix.message("INCORRECTO");
+            }
+        }
+
+/*
+         webix.ready(function () {
+            webix.ui({
+                  id:"Game",
+                  rows:[
+                      { id:"word", view:"label",value: WORD},
+                      { id:"rute", view:"label",value: RUTE}
+                  ]
+              });
+         });
+*/
+         
+       </script>
+   </body>
+</html>
